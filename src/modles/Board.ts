@@ -1,3 +1,4 @@
+import { Figure } from './figures/Figure';
 import { Rook } from './figures/Rook';
 import { Knight } from './figures/Knight';
 import { Bishop } from './figures/Bishop';
@@ -8,7 +9,12 @@ import { Colors } from './Colors';
 import { Cell } from './Cell';
 
 export class Board{
-   cells: Cell[][] = []
+   cells: Cell[][] = [];
+   lostBlackFigures: Figure[] = [];
+   lostWhiteFigures: Figure[] = [];
+   whiteKing: Figure | null = null;
+   blackKing: Figure | null = null;
+   isChangePawn: boolean = false;
 
 
    public initSells(){
@@ -28,6 +34,8 @@ export class Board{
    public getCopyBoard(): Board {
       const newBoard = new Board();
       newBoard.cells = this.cells;
+      newBoard.lostBlackFigures = this.lostBlackFigures;
+      newBoard.lostWhiteFigures = this.lostWhiteFigures;
       return newBoard;
    }
 
@@ -53,8 +61,8 @@ export class Board{
    }
 
    private addKings(){
-      new King(Colors.BLACK, this.getCell(4, 0));
-      new King(Colors.WHITE, this.getCell(4, 7));
+      this.blackKing = new King(Colors.BLACK, this.getCell(4, 0));
+      this.whiteKing = new King(Colors.WHITE, this.getCell(4, 7));
    }
 
    private addQueens(){
@@ -90,5 +98,25 @@ export class Board{
       this.addBishops();
       this.addKnights();
       this.addRooks();
+   }
+
+   public changePawn(type: string,color: string,currentChangePawn: Cell){
+      switch (type) {
+         case 'knight':
+            currentChangePawn.figure = new Knight(color === Colors.BLACK ? Colors.BLACK : Colors.WHITE, this.getCell(currentChangePawn.x, currentChangePawn.y));
+            break;
+         case 'bishop':
+            currentChangePawn.figure = new Bishop(color === Colors.BLACK ? Colors.BLACK : Colors.WHITE, this.getCell(currentChangePawn.x, currentChangePawn.y));
+            break;
+         case 'rook':
+            currentChangePawn.figure = new Rook(color === Colors.BLACK ? Colors.BLACK : Colors.WHITE, this.getCell(currentChangePawn.x, currentChangePawn.y));
+            break;
+         case 'queen':
+            currentChangePawn.figure = new Queen(color === Colors.BLACK ? Colors.BLACK : Colors.WHITE, this.getCell(currentChangePawn.x, currentChangePawn.y));
+            break;
+         default:
+            break;
+      }
+      currentChangePawn.board.isChangePawn = false;
    }
 }
