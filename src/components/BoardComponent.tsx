@@ -4,6 +4,7 @@ import { Cell } from '../modles/Cell';
 import { Player } from '../modles/Player';
 import CellComponent from './CellComponent';
 import LostFigures from './LostFigures';
+import Timer from './Timer';
 
 interface BoardProps {
   board: Board;
@@ -11,9 +12,11 @@ interface BoardProps {
   currentPlayer: Player | null;
   swapPlayer: () => void;
   setCurrentChangePawn: (type: Cell) => void;
+  restart: () => void;
+  winPopup: (color: string) => void;
 }
 
-const BoardComponent: FC<BoardProps> = ({board, setBoard, currentPlayer, swapPlayer, setCurrentChangePawn}) => {
+const BoardComponent: FC<BoardProps> = ({board, setBoard, currentPlayer, swapPlayer, setCurrentChangePawn, restart, winPopup}) => {
   const [selectedSell,setSelectedSell] = useState<Cell | null>(null);
 
   function clickCell(cell: Cell){
@@ -74,6 +77,11 @@ const BoardComponent: FC<BoardProps> = ({board, setBoard, currentPlayer, swapPla
           )}
         </React.Fragment>
         )}
+        <Timer
+           currentPlayer={currentPlayer}
+           restart={restart}
+           winPopup={winPopup}
+          />
       </div>      
     </div>
   )
